@@ -25,7 +25,15 @@ class StreamListener(tweepy.Stream):
         if status_code == '420':
             return False
     def on_status(self, status):
-        self.db.save(status._json)
+        doc = status._json
+
+        # create partition id
+        tweet_id = doc["id"]
+        lang = doc["lang"]
+        doc_id = f"{lang}:{tweet_id}"
+        doc["_id"] = doc_id
+
+        self.db.save(doc)
 
 class Stream:
     def __init__(self, apiKey, apiSecret, accessToken, accessTokenSecret, db):

@@ -1,13 +1,13 @@
 version: "3.9"
 services:
-  search:
-    build:
-      context: .
-      dockerfile: search.Dockerfile
-    image: twitter_search
-    network_mode: host
-    environment:
-      - PYTHONUNBUFFERED=1
+  # search:
+  #   build:
+  #     context: .
+  #     dockerfile: search.Dockerfile
+  #   image: twitter_search
+  #   network_mode: host
+  #   environment:
+  #     - PYTHONUNBUFFERED=1
   stream:
     build:
       context: .

@@ -1,16 +1,34 @@
+import os
 import json
 import tweepy
 import couchdb
 
+
 class TwitterUtils:
-    def client(self):
-        with open("twitter_api_credential.json", "r") as f:
+    def load_config(self):
+        curr_dir = os.path.dirname(os.path.abspath(__file__))
+        config_file = os.path.join(curr_dir, "twitter_api_credential.json")
+
+        with open(config_file, "r") as f:
             credential = json.load(f)
 
+        return credential
+
+
+    def client(self):
+        credential = self.load_config()
         auth = tweepy.OAuthHandler(credential["api_key"], credential["api_secret"])
         auth.set_access_token(credential["access_token"], credential["access_token_secret"])
-        return tweepy.API(auth, wait_on_rate_limit=True)
+        return tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+
     def db(self):
-        server = couchdb.Server("http://user:pass@127.0.0.1:15984")
-        return server["testing"]
+        credential = self.load_config()
+        username = credential["db_username"]
+        password = credential["db_password"]
+        host = credential["db_host"]
+        port = credential["db_port"]
+        db_name = credential["db_name"]
+
+        server = couchdb.Server(f"http://{username}:{password}@{host}:{port}")
+        return server[db_name]
     
