@@ -1,5 +1,6 @@
 from twitter_utils import TwitterUtils
 import tweepy
+import couchdb
 import logging
 import logger
 
@@ -25,15 +26,21 @@ class StreamListener(tweepy.Stream):
         if status_code == '420':
             return False
     def on_status(self, status):
-        doc = status._json
+        try:
+            doc = status._json
 
-        # create partition id
-        tweet_id = doc["id"]
-        lang = doc["lang"]
-        doc_id = f"{lang}:{tweet_id}"
-        doc["_id"] = doc_id
+            # create partition id
+            tweet_id = doc["id"]
+            lang = doc["lang"]
+            doc_id = f"{lang}:{tweet_id}"
+            doc["_id"] = doc_id
 
-        self.db.save(doc)
+            self.db.save(doc)
+        except (couchdb.http.Unauthorized, couchdb.http.ResourceNotFound) as e:
+            logging.error("Couch db resource error: {}".format(str(e)))
+            return False
+        except (BaseException) as e:
+            logging.warning("Couch db save: {}".format(str(e)))
 
 class Stream:
     def __init__(self, apiKey, apiSecret, accessToken, accessTokenSecret, db):
