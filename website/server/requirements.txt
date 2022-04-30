@@ -1,0 +1,3 @@
+couchdb
+flask
+flask_cors

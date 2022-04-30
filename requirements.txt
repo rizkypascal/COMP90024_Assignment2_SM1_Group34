@@ -1,5 +1,0 @@
-tweepy
-pandas
-couchdb
-shapely
-numpy
