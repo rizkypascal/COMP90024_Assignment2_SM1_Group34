@@ -1,0 +1,57 @@
+# Common vars
+availability_zone: melbourne-qh2-uom
+instance_image: 356ff1ed-5960-4ac2-96a1-0c0198e6a999
+instance_key_name: assignment-2
+instance_flavor: uom.mse.2c9g
+
+# Volume
+volumes:
+  - vol_name: master-vol-1
+    vol_size: 120
+  - vol_name: worker-1-vol-1
+    vol_size: 120
+  - vol_name: worker-2-vol-1
+    vol_size: 120
+
+
+# Security group
+security_groups:
+  - name: assignment2_ssh
+    description: "Demo security group for SSH access"
+    protocol: tcp
+    port_range_min: 22
+    port_range_max: 22
+    remote_ip_prefix: 0.0.0.0/0
+  - name: assignment2_http
+    description: "Demo security group for HTTP"
+    protocol: tcp
+    port_range_min: 80
+    port_range_max: 80
+    remote_ip_prefix: 0.0.0.0/0
+  - name: assignment2_couchdb
+    description: "Demo security group for CouchDB"
+    protocol: tcp
+    port_range_min: 5984
+    port_range_max: 5984
+    remote_ip_prefix: 0.0.0.0/0
+  - name: assignment2_erlang
+    description: "Demo security group for CouchDB Erlang"
+    protocol: tcp
+    port_range_min: 4369
+    port_range_max: 4369
+    remote_ip_prefix: 0.0.0.0/0
+  - name: assignment2_erlang_listen
+    description: "Demo security group for CouchDB Erlang Listen"
+    protocol: tcp
+    port_range_min: 9100
+    port_range_max: 9100
+    remote_ip_prefix: 0.0.0.0/0
+
+# Instance
+instances:
+  - name: master
+    volumes: ['master-vol-1']
+  - name: worker-1
+    volumes: ['worker-1-vol-1']
+  - name: worker-2
+    volumes: ['worker-2-vol-1']

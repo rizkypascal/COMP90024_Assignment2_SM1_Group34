@@ -21,11 +21,19 @@ class Search:
         self.tweets_count = tweets_count
     
     def save(self, tweet):
-        self.db.save(tweet._json)
+        doc = tweet._json
+
+        # create partition id
+        tweet_id = doc["id"]
+        lang = doc["lang"]
+        doc_id = f"{lang}:{tweet_id}"
+        doc["_id"] = doc_id
+
+        self.db.save(doc)
     
     def search(self):
         try:
-            for tweet in self.api.search_tweets(q=self.query, count=1):
+            for tweet in self.api.search_tweets(q=self.query, count=1, include_entities=False):
                 try:
                     self.save(tweet)
                     self.tweets_count += self.tweets_count + 1
@@ -39,11 +47,15 @@ class Search:
             logging.error("Twitter search error: {}".format(str(e)))
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.CRITICAL)
     twitter_utils = TwitterUtils()
     api = twitter_utils.client()
     db = twitter_utils.db()
     
-    while True:
+    count = 1
+    while count > 0:
         logging.info("harvesting search starting")
         search = Search(api, db, "test")
         search.search()
+
+        count -= 1
