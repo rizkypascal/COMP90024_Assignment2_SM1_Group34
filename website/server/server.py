@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
-from harvester import db_utils
+
+import db_utils
 
 app = Flask(__name__)
 
