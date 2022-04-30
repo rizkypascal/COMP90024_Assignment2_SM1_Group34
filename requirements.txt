@@ -1,3 +1,5 @@
 tweepy
 pandas
 couchdb
+flask
+flask_cors
