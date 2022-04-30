@@ -8,7 +8,7 @@ function App() {
   const [data, setData] = useState([{}]);
 
   useEffect(() => {
-    fetch("/lgas", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
+    fetch("/api/lgas", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
       res => res.json()
     ).then(
       data => {
