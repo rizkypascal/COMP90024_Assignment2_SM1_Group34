@@ -13,9 +13,9 @@ class DbUtils:
             credential = json.load(f)
 
         return credential
-    
+
     @classmethod
-    def connect(cls, db_name = None):
+    def connect(cls, db_name=None):
         credential = cls.load_config()
 
         username = credential["db_username"]
@@ -28,4 +28,3 @@ class DbUtils:
 
         server = couchdb.Server(f"http://{username}:{password}@{host}:{port}")
         return server[db_name]
-    
