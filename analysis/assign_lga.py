@@ -70,40 +70,58 @@ def assign_lga_to_tweet(polygons):
         polygons (_type_): _description_
     """
     db = DbUtils.connect()
+    batch_size = 100
     query = {
         "selector": {
             "geo": {
                 "$ne": None
             }
-        }
+        },
+        "limit": batch_size,
+        "skip": 0,
     }
 
-    for doc in db.find(query):
-        print(f"Tweet ID: {doc['id']}")
-        coordinates = doc.get("geo", {}).get("coordinates", [])
-        
-        point = Point(coordinates[1], coordinates[0]) # create point
+    reach_last_doc = False
+    batch = 1
+    while not reach_last_doc:
+        doc_count = 0
+        for doc in db.find(query):
+            try:
+                doc_count += 1
+                coordinates = doc.get("geo", {}).get("coordinates", [])
+                
+                point = Point(coordinates[1], coordinates[0]) # create point
 
-        found_lga = False
-        for obj in polygons:
-            polygon = obj.get("polygon")
-            if point.within(polygon):
-                found_lga = True # check if a point is in the polygon 
-            elif polygon.contains(point):
-                found_lga = True
-            elif point.touches(polygon):
-                found_lga = True
+                found_lga = False
+                for obj in polygons:
+                    polygon = obj.get("polygon")
+                    if point.within(polygon):
+                        found_lga = True # check if a point is in the polygon 
+                    elif polygon.contains(point):
+                        found_lga = True
+                    elif point.touches(polygon):
+                        found_lga = True
 
-            if found_lga is True:
-                print(f"LGA Found")
+                    if found_lga is True:
+                        print(f"Tweet ID: {doc['_id']}")
+                        lga = obj.get("data")
+                        old_extra = doc.get("extra", {})
+                        lga_data = {"lga": lga}
+                        doc["extra"] = {**old_extra, **lga_data}
+                        db.save(doc)
 
-                lga = obj.get("data")
-                old_extra = doc.get("extra", {})
-                lga_data = {"lga": lga}
-                doc["extra"] = {**old_extra, **lga_data}
-                break
+                        break
+            except Exception as e:
+                print(f"Failed to save: {e}")
 
-                db.save(doc)
+        batch += 1
+        query["skip"] = int(batch * batch_size)
+
+        if doc_count < batch_size:
+            reach_last_doc = True
+
+        print("batch", batch)
+
 
 if __name__ == "__main__":
     polys = load_polygons()
