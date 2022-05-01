@@ -69,7 +69,7 @@ def assign_lga_to_tweet(polygons):
     Args:
         polygons (_type_): _description_
     """
-    db = DbUtils.connect(db_name="twitter")
+    db = DbUtils.connect()
     query = {
         "selector": {
             "geo": {
@@ -103,7 +103,7 @@ def assign_lga_to_tweet(polygons):
                 doc["extra"] = {**old_extra, **lga_data}
                 break
 
-                # db.save(doc)
+                db.save(doc)
 
 if __name__ == "__main__":
     polys = load_polygons()
