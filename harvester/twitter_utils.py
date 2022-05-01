@@ -21,14 +21,14 @@ class TwitterUtils:
         auth.set_access_token(credential["access_token"], credential["access_token_secret"])
         return tweepy.API(auth, wait_on_rate_limit=True)
 
-    def db(self):
-        credential = self.load_config()
-        username = credential["db_username"]
-        password = credential["db_password"]
-        host = credential["db_host"]
-        port = credential["db_port"]
-        db_name = credential["db_name"]
+    # def db(self):
+    #     credential = self.load_config()
+    #     username = credential["db_username"]
+    #     password = credential["db_password"]
+    #     host = credential["db_host"]
+    #     port = credential["db_port"]
+    #     db_name = credential["db_name"]
 
-        server = couchdb.Server(f"http://{username}:{password}@{host}:{port}")
-        return server[db_name]
+    #     server = couchdb.Server(f"http://{username}:{password}@{host}:{port}")
+    #     return server[db_name]
     
