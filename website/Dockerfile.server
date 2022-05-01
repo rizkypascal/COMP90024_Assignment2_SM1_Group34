@@ -1,0 +1,9 @@
+FROM python:3.9
+WORKDIR /app
+
+COPY server/requirements.txt server/server.py server/db_utils.py server/config.json ./
+RUN pip install -r ./requirements.txt
+# ENV FLASK_ENV production
+
+EXPOSE 5000
+CMD ["gunicorn", "-b", ":5000", "server:app"]

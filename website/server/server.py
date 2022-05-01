@@ -9,12 +9,12 @@ db = db_utils.DbUtils.connect(db_name="lga")
 cors = CORS()
 
 
-@ app.route("/test", methods=["GET"])
+@ app.route("/api/test", methods=["GET"])
 def test():
     return {"data": ["test1", "test2", "test3"]}
 
 
-@ app.route("/lgas", methods=["GET"])
+@ app.route("/api/lgas", methods=["GET"])
 def info():
     res = []
     mango1 = {"selector": {}, "limit": 45}
