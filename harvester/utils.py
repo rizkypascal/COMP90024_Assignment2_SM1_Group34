@@ -63,24 +63,19 @@ def load_polygons():
 
     return all_polygons
 
-def assign_lga_to_tweet(polygons):
+def assign_lga_to_tweet(polygons, doc):
     """Assign LGA to tweet.
 
     Args:
-        polygons (_type_): _description_
+        polygons (list of Polygons): LGA polygons
+        doc (dict): a tweet
     """
-    db = DbUtils.connect(db_name="twitter")
-    query = {
-        "selector": {
-            "geo": {
-                "$ne": None
-            }
-        }
-    }
+    try:
+        geo = doc.get("geo")
+        if geo is None:
+            return doc
 
-    for doc in db.find(query):
-        print(f"Tweet ID: {doc['id']}")
-        coordinates = doc.get("geo", {}).get("coordinates", [])
+        coordinates = geo.get("coordinates", [])
         
         point = Point(coordinates[1], coordinates[0]) # create point
 
@@ -95,17 +90,14 @@ def assign_lga_to_tweet(polygons):
                 found_lga = True
 
             if found_lga is True:
-                print(f"LGA Found")
-
+                print(f"Tweet ID: {doc['_id']}")
                 lga = obj.get("data")
                 old_extra = doc.get("extra", {})
                 lga_data = {"lga": lga}
                 doc["extra"] = {**old_extra, **lga_data}
-                break
+                return doc
 
-                # db.save(doc)
+        return doc
 
-if __name__ == "__main__":
-    polys = load_polygons()
-    assign_lga_to_tweet(polys)
-    
+    except Exception as e:
+        print(f"Some error occurred when assigning LGA to a tweet: {e}")

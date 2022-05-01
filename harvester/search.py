@@ -1,4 +1,5 @@
 from twitter_utils import TwitterUtils
+from utils import DbUtils
 import tweepy
 import couchdb
 import logging
@@ -49,8 +50,10 @@ class Search:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.CRITICAL)
     twitter_utils = TwitterUtils()
+    db_utils = DbUtils()
+
     api = twitter_utils.client()
-    db = twitter_utils.db()
+    db = db_utils.connect()
     
     count = 1
     while count > 0:
