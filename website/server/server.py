@@ -73,7 +73,7 @@ def lgas(lga_id):
     }
 
 
-@ app.route("/api/<census_year>/census-lgas/<lga_id>", methods=["GET"])
+@ app.route("/api/census/<census_year>/lgas/<lga_id>", methods=["GET"])
 def census_lga(census_year, lga_id):
 
     try:
