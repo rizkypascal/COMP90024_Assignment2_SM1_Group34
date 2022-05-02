@@ -79,7 +79,7 @@ def census_lga(census_year, lga_id):
     try:
         census_year = int(census_year)
     except ValueError:
-        return f"Invalid year: should be numeric", 422
+        return "Invalid year: should be numeric", 422
 
     current_year = date.today().year
 
