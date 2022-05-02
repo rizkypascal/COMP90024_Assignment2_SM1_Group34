@@ -1,5 +1,5 @@
 # src
-src_dir: /Users/juny/projects/ccc_website/harvester
+src_dir: ../harvester
 
 # dest
 app_dir: harvester
