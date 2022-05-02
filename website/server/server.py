@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_cors import CORS
-
+from datetime import date
 from db_utils import DbUtils
+
 import json
+import couchdb
 
 app = Flask(__name__)
 
@@ -24,7 +26,7 @@ def info():
         res.append(row["properties"]["lga_name_2016"])
     return {"data": res}
 
-@ app.route("/api/lgas/<lga_id>")
+@ app.route("/api/lgas/<lga_id>", methods=["GET"])
 def lgas(lga_id):
 
     with open("language.json", "r") as f:
@@ -69,6 +71,46 @@ def lgas(lga_id):
             "tweet_languages": tweet_languages
         }
     }
+
+
+@ app.route("/api/<census_year>/census-lgas/<lga_id>", methods=["GET"])
+def census_lga(census_year, lga_id):
+
+    try:
+        census_year = int(census_year)
+    except ValueError:
+        return f"Invalid year: should be numeric", 422
+    current_year = date.today().year
+
+    if(census_year < 1900 or census_year > current_year):
+        return f"Invalid year: range should between 1900 and {current_year}", 422
+
+    try:
+        census_db = DbUtils.connect(db_name=f"census_{census_year}")
+
+        mango = {
+            "selector": {
+                f"lga_code_{census_year}": f"{lga_id}"
+            },
+            "fields": [
+                "lga_code_2016",
+                "lga_name_2016",
+                "variable",
+                "value",
+                "total",
+                "proportion",
+                "language"
+            ]
+        }
+
+        objects = []
+
+        for row in census_db.find(mango):
+            objects.append(row)
+
+        return {"data": objects}
+    except (couchdb.http.Unauthorized, couchdb.http.ResourceNotFound) as e:
+        return "Data not found", 404
 
 if __name__ == "__main__":
     app.run(debug=True)
