@@ -1,0 +1,6 @@
+# src
+src_dir: /Users/juny/projects/ccc_website/harvester
+
+# dest
+app_dir: harvester
+ansible_user: ubuntu
