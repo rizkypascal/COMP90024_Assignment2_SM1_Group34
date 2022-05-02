@@ -9,3 +9,17 @@
     - role: openstack-volume
     - role: openstack-security-group
     - role: openstack-instance
+
+- hosts: HARVESTER
+  vars_files:
+    - host_vars/harverster.yaml
+  gather_facts: true
+  vars:
+    - ansible_user: ubuntu
+    - ansible_ssh_private_key_file: 
+    - ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+
+  roles:
+    - role: openstack-common
+    - role: openstack-setup
+    - role: openstack-docker

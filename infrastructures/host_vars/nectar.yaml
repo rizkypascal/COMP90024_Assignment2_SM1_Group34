@@ -55,3 +55,5 @@ instances:
     volumes: ['worker-1-vol-1']
   - name: worker-2
     volumes: ['worker-2-vol-1']
+  - name: harvester
+    volumes: []

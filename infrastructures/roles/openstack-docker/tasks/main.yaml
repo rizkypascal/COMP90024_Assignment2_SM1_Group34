@@ -1,0 +1,25 @@
+- name: Create Harvester directory
+  become: yes
+  ansible.builtin.file:
+    path: "{{ app_dir }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    recurse: yes
+    state: directory
+
+- name: Copy harverster project to remote host
+  become: yes
+  ansible.builtin.copy:
+    src: "{{ src_dir }}/"
+    dest: "{{ app_dir }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Run docker compose
+  become: yes
+  community.docker.docker_compose:
+    project_src: "{{ app_dir }}"
+    pull: no
+    state: present
+    remove_orphans: yes
+    recreate: always
