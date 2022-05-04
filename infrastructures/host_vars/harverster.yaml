@@ -4,3 +4,14 @@ src_dir: ../harvester
 # dest
 app_dir: harvester
 ansible_user: ubuntu
+
+# app keys
+api_key: 
+api_secret: 
+access_token: 
+access_token_secret: 
+db_username: 
+db_password: 
+db_host: 
+db_port: 5984
+db_name: twitter
