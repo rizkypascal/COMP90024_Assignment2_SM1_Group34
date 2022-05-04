@@ -10,6 +10,19 @@
     - role: openstack-security-group
     - role: openstack-instance
 
+- hosts: MAIN_SERVERS
+  vars_files:
+    - host_vars/nectar.yaml
+  gather_facts: true
+  vars:
+    - ansible_user: ubuntu
+    - ansible_ssh_private_key_file: 
+    - ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+
+  roles:
+    - role: openstack-volume-mount
+
+
 - hosts: HARVESTER
   vars_files:
     - host_vars/harverster.yaml

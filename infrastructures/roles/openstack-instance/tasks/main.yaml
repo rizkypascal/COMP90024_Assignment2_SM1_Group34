@@ -37,3 +37,11 @@
     groups: HARVESTER
   loop: '{{ os_instance.results }}'
   when: item.openstack is defined and item.openstack.name == "harvester"
+
+# Add hosts to Ansible in-memory inventory
+- name: Add host
+  ansible.builtin.add_host:
+    name: '{{ item.openstack.public_v4 }}'
+    groups: MAIN_SERVERS
+  loop: '{{ os_instance.results }}'
+  when: item.openstack is defined and item.openstack.name != "harvester"

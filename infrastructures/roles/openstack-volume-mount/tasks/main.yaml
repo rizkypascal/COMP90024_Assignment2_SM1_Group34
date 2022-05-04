@@ -1,0 +1,26 @@
+- name: checking folders
+  become: yes
+  ansible.builtin.stat:
+    path: "{{ item.mountpoint }}"
+  register: directory_stats
+  loop: '{{ volumes }}'
+
+- name: Create directory
+  become: yes
+  ansible.builtin.file:
+    path: "{{ item.stat.path }}"
+    recurse: yes
+    state: directory
+  when: item.stat.exists == false
+  with_items:
+    - "{{ directory_stats.results }}"
+
+- name: Mount device
+  become: yes
+  ansible.posix.mount:
+    path: "{{ item.mountpoint }}"
+    src: "{{ item.device }}"
+    fstype: xfs
+    state: mounted
+  when: item.device is defined
+  loop: '{{ volumes }}'

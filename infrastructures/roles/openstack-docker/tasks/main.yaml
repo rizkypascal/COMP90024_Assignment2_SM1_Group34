@@ -15,6 +15,14 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
 
+- name: Configure compose
+  become: yes
+  ansible.builtin.template:
+    src: config.json.j2
+    dest: "{{ app_dir }}/config.json"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
 - name: Run docker compose
   become: yes
   community.docker.docker_compose:
