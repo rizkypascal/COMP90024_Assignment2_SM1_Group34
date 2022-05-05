@@ -73,8 +73,8 @@ def lgas(lga_id):
     }
 
 
-@ app.route("/api/census/<census_year>/lgas/<lga_id>", methods=["GET"])
-def census_lga(census_year, lga_id):
+@ app.route("/api/census/<census_year>/lgas/<lga_id>/<category>", methods=["GET"])
+def census_lga(census_year, lga_id, category):
 
     try:
         census_year = int(census_year)
@@ -87,7 +87,11 @@ def census_lga(census_year, lga_id):
         return f"Invalid year: range should between 1900 and {current_year}", 422
 
     try:
-        census_db = DbUtils.connect(db_name=f"census_{census_year}")
+        db_name = f"census_{census_year}_{category}"
+        if category == "language":
+            db_name = f"census_{census_year}"
+
+        census_db = DbUtils.connect(db_name=db_name)
 
         mango = {
             "selector": {
@@ -100,8 +104,9 @@ def census_lga(census_year, lga_id):
                 "value",
                 "total",
                 "proportion",
-                "language"
-            ]
+                f"{category}"
+            ],
+            "sort": [{"proportion": "desc"}],
         }
 
         objects = []
