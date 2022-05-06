@@ -111,6 +111,7 @@ def census_lga(census_year, lga_id, category):
                 f"{category}"
             ],
             "sort": [{"proportion": "desc"}],
+            "limit": 10,
         }
 
         objects = []
