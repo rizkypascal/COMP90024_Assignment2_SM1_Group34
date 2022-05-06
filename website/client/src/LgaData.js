@@ -1,6 +1,6 @@
 import { Dropdown } from "react-bootstrap";
 import { useState } from 'react';
-import Grid from './Grid';
+import Collapsible from 'react-collapsible';
 
 import { AgGridReact } from 'ag-grid-react'; // the AG Grid React Component
 
@@ -96,11 +96,11 @@ const LgaData = ({ lgaNames, lgaCodes }) => {
                     <p>Loading...</p>
                 ) : (<div className="dropdown">
                     <Dropdown>
-                        <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                        <Dropdown.Toggle className="button" variant="success" id="dropdown-basic">
                             {value}
                         </Dropdown.Toggle>
 
-                        <Dropdown.Menu>
+                        <Dropdown.Menu variant="success">
                             {lgaNames.map((data, i) => {
                                 return (<Dropdown.Item key={i} title={value} onClick={() => handleSelect(data, i)}
                                 >{data}</Dropdown.Item>)
@@ -110,15 +110,6 @@ const LgaData = ({ lgaNames, lgaCodes }) => {
                 </div>)
 
                 }
-                {/* {props.data.data.map(d => {
-                return (
-                    <div key={d._id}>
-                        <h2 className="tweetText"> {d.text}</h2>
-                        <p> {d.user}</p>
-                        <hr />
-                    </div>
-                )
-            })} */}
             </div>
             <div className="lgaDataDisplay">
 
@@ -131,11 +122,11 @@ const LgaData = ({ lgaNames, lgaCodes }) => {
                 ) : (
                     <div>
                         <p></p>
-                        <h2>{value}</h2>
+                        <h2 className="h2">{value}</h2>
                         <div className="languageData">
                             <div className="column">
                                 <div>
-                                    <h4>Twitter Language Data</h4>
+                                    <h4 className="h4">Twitter Language Data</h4>
                                     <p className="LGACode">LGA Code: {aurinLgaData.code}</p>
                                     <p className="italics">Language: # Tweets Collected</p>
                                 </div>
@@ -153,50 +144,45 @@ const LgaData = ({ lgaNames, lgaCodes }) => {
                                 </div>
                             </div>
                             <div className="column" key={2}>
-                                <h4>Census Data</h4>
-                                <p className="italics">
+                                <h4 className="h4">Census Data</h4>
+                                <Collapsible trigger="Language: Proportion of First Language Speakers">
+                                    <div>
+                                        <p></p>
+                                        <div>
+                                            <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
+                                                <AgGridReact rowData={censusLanguageData} columnDefs={languageColumns}></AgGridReact>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Collapsible>
+
+                                {/* <p className="italics">
                                     Language: Proportion of First Language Speakers
-                                </p>
-                                <div>
-                                    <div>
-                                        <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
-                                            <AgGridReact rowData={censusLanguageData} columnDefs={languageColumns}></AgGridReact>
-                                        </div>
-                                    </div>
-                                </div>
+                                </p> */}
+
 
                                 <p></p>
-
-                                <p className="italics">
-                                    Ancestry
-                                </p>
-                                <div>
+                                <Collapsible trigger="Ancestry">
+                                    <p></p>
                                     <div>
-                                        <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
-                                            <AgGridReact rowData={censusAncestryData} columnDefs={ancestryColumns}></AgGridReact>
+                                        <div>
+                                            <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
+                                                <AgGridReact rowData={censusAncestryData} columnDefs={ancestryColumns}></AgGridReact>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Collapsible>
                                 <p></p>
-
-                                <p className="italics">
-                                    Religion
-                                </p>
-
-                                <div>
+                                <Collapsible trigger="Religion">
+                                    <p></p>
                                     <div>
-                                        <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
-                                            <AgGridReact rowData={censusReligionData} columnDefs={religionColumns}></AgGridReact>
+                                        <div>
+                                            <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
+                                                <AgGridReact expandField="collapsed" rowData={censusReligionData} columnDefs={religionColumns}></AgGridReact>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <p></p>
-
-
-
-
-
+                                </Collapsible>
                             </div>
                         </div>
                     </div>
