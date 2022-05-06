@@ -4,8 +4,9 @@ import Home from './Home';
 
 
 function App() {
-
-  const [data, setData] = useState([{}]);
+  const [lgaData, setLgaData] = useState([{}])
+  const [lgaNames, setLgaNames] = useState([{}]);
+  const [lgaCodes, setLgaCodes] = useState([{}]);
 
   useEffect(() => {
     fetch("/api/lgas", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
@@ -13,7 +14,10 @@ function App() {
     ).then(
       data => {
         console.log(data)
-        setData(data)
+        setLgaNames(data.lgaNames)
+        setLgaCodes(data.lgaCodes)
+        console.log(lgaNames)
+        console.log(lgaCodes)
       }
     ).catch(error => console.log(error))
   }, [])
@@ -27,7 +31,7 @@ function App() {
 
         {/* <h1>COMP90024 Assignment 2</h1> */}
 
-        <Home data={data} />
+        <Home lgaNames={lgaNames} lgaCodes={lgaCodes} />
 
       </div>
       {/* {(typeof data.data === "undefined") ? (
