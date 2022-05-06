@@ -11,7 +11,7 @@
     padding: 20px;
     display: flex;
     align-items: center;
-    max-width: 600px;
+    max-width: 75%;
     margin: 0 auto;
     border-bottom: 1px solid #f2f2f2;
 }
@@ -35,9 +35,13 @@
 }
 
 .content {
-    max-width: 600px;
+    max-width: 75%;
     margin: 40px auto;
     padding: 20px;
+}
+
+.h1 {
+    text-align: left;
 }
 
 /* blog previews / list */
@@ -55,4 +59,22 @@
     font-size: 20px;
     color: #f1356d;
     margin-bottom: 8px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+}
+
+.languageData {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.italics {
+    font-style: italic;
 }

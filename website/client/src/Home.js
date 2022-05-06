@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import LgaData from './LgaData';
-const Home = ({ data }) => {
+const Home = ({ lgaNames, lgaCodes }) => {
     // let name = 'mario';
     const [name, setName] = useState('mario');
     const [age, setAge] = useState(25);
@@ -34,8 +34,8 @@ const Home = ({ data }) => {
     return (
         <div className="home">
 
-            <h1>AURIN Language Data Versus Census Language Data</h1>
-            <LgaData data={data} />
+            <h1 className="h1">AURIN Language Data Versus Census Language Data</h1>
+            <LgaData lgaNames={lgaNames} lgaCodes={lgaCodes} />
             {/* map method cycles through each item in an array */}
             {/* <BlogList blogs={blogs} title="All Blogs!" handleDelete={handleDelete} />
             <button onClick={() => setName('luigi')}>Change name</button>
