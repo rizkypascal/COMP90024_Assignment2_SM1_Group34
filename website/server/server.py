@@ -20,11 +20,14 @@ def test():
 
 @ app.route("/api/lgas", methods=["GET"])
 def info():
-    res = []
+    res1 = []
+    res2 = []
     mango1 = {"selector": {}, "limit": 45}
     for row in LGA_DB.find(mango1):
-        res.append(row["properties"]["lga_name_2016"])
-    return {"data": res}
+        res1.append(row["properties"]["lga_name_2016"])
+        res2.append(row["properties"]["lga_code_2016"])
+    return {"lgaNames": res1, "lgaCodes": res2}
+
 
 @ app.route("/api/lgas/<lga_id>", methods=["GET"])
 def lgas(lga_id):
@@ -58,11 +61,12 @@ def lgas(lga_id):
 
     for row in lga_lang_count:
         if(row["key"][0] == str(lga_id)):
-            tweet_languages.append({
-                "code": row["key"][1],
-                "name": lang_mapper[row["key"][1]],
-                "tweet_count": row["value"]
-            })
+            if row["key"][1] in lang_mapper.keys():
+                tweet_languages.append({
+                    "code": row["key"][1],
+                    "name": lang_mapper[row["key"][1]],
+                    "tweet_count": row["value"]
+                })
 
     return {
         "data": {
@@ -117,6 +121,7 @@ def census_lga(census_year, lga_id, category):
         return {"data": objects}
     except (couchdb.http.Unauthorized, couchdb.http.ResourceNotFound) as e:
         return "Data not found", 404
+
 
 if __name__ == "__main__":
     app.run(debug=True)
