@@ -94,3 +94,11 @@
     color: #198753;
     text-decoration-color: #198753;
 }
+
+.map {
+    height: 500px;
+}
+
+.leaflet-container {
+    height: 500px;
+}
