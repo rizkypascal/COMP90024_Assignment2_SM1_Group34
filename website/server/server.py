@@ -57,7 +57,7 @@ def lgas(lga_id):
         properties = row["properties"]
 
     lga_lang_count = DbUtils.view(
-        db="twitter",
+        db="twitter_historical",
         design="lga_count",
         view="lga-language-count",
         group_level=2
@@ -69,11 +69,11 @@ def lgas(lga_id):
     tweet_languages = []
 
     for row in lga_lang_count:
-        if(row["key"][0] == str(lga_id)):
-            if row["key"][1] in lang_mapper.keys():
+        if(row["key"][1] == str(lga_id)):
+            if row["key"][0] in lang_mapper.keys():
                 tweet_languages.append({
-                    "code": row["key"][1],
-                    "name": lang_mapper[row["key"][1]],
+                    "code": row["key"][0],
+                    "name": lang_mapper[row["key"][0]],
                     "tweet_count": row["value"]
                 })
 
