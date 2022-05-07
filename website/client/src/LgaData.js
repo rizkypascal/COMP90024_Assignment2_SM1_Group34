@@ -75,7 +75,8 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                     <p>Loading...</p>
                 ) : (<div className="dropdown">
                     <div className="map">
-                        {(typeof geoJSONData === "undefined") ? (
+                        <script>{console.log(geoJSONData)}</script>
+                        {(typeof geoJSONData === "undefined" || geoJSONData.length == 1) ? (
                             <div>
                                 <p>Loading...</p>
                             </div>
@@ -123,7 +124,7 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
             <div className="lgaDataDisplay">
 
 
-                {(aurinLgaData.code == undefined ? (
+                {(aurinLgaData.code === undefined) ? (
                     <div>
                         <p></p>
                         < p > Please select an LGA to view its data</p>
@@ -189,7 +190,7 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                             </div>
                         </div>
                     </div>
-                )
+
                 )}
             </div>
         </div >

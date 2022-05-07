@@ -57,7 +57,7 @@ def lgas(lga_id):
         properties = row["properties"]
 
     lga_lang_count = DbUtils.view(
-        db="twitter_historical",
+        db="twitter",
         design="lga_count",
         view="lga-language-count",
         group_level=2
