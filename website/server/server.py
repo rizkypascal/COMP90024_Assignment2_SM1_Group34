@@ -100,15 +100,15 @@ def census_lga(census_year, lga_id, category):
         return f"Invalid year: range should between 1900 and {current_year}", 422
 
     try:
-        db_name = f"census_{census_year}_{category}"
-        if category == "language":
-            db_name = f"census_{census_year}"
+        db_name = "census"
 
         census_db = DbUtils.connect(db_name=db_name)
 
         mango = {
             "selector": {
-                f"lga_code_{census_year}": f"{lga_id}"
+                f"lga_code_{census_year}": f"{lga_id}",
+                f"source.name": f"{category}",
+                f"source.census_year": census_year
             },
             "fields": [
                 f"lga_code_{census_year}",
