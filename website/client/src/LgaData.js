@@ -37,7 +37,7 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
 
     const handleSelect = (e, i) => {
         setValue(e)
-        fetch("/api/lgas/" + lgaCodes[i], { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
+        fetch("/api/twitter/all/lgas/" + lgaCodes[i], { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
             res => res.json()
         ).then(res => {
             setAurinLgaData(res.data)
@@ -92,7 +92,15 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                                     <div>
                                         {geoJSONData.map((data, i) => {
                                             return (<GeoJSON key={i} data={data} eventHandlers={{
-                                                click: () => {
+                                                mouseover: (e) => {
+                                                    e.target.openPopup()
+
+                                                },
+                                                // mouseout: (e) => {
+                                                //     e.target.closePopup()
+                                                // },
+                                                click: (e) => {
+                                                    e.target.openPopup()
                                                     handleSelect(data.properties.lga_name_2016, i)
                                                 }
                                             }} >
@@ -120,7 +128,7 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                 </div>)
 
                 }
-            </div>
+            </div >
             <div className="lgaDataDisplay">
 
 
