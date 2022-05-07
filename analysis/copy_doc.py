@@ -17,10 +17,15 @@ def copy_docs(src_db, dest_db, query, batch_size):
         for doc in src_db.find(query):
             try:
                 doc_count += 1
+                doc_rev = doc["_rev"]
                 print(doc["_id"])
                 del(doc["_rev"])
                 
                 dest_db.save(doc)
+
+                doc["_rev"] = doc_rev
+                doc["copied"] = True
+                src_db.save(doc)
                 
             except Exception as e:
                 print(f"Failed to save: {e}")
