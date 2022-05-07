@@ -8,7 +8,7 @@ function App() {
   const [lgaCodes, setLgaCodes] = useState([[]]);
 
   useEffect(() => {
-    fetch("/api/lga_details/lga_names", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
+    fetch("/api/lgas?compact=true", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
       res => res.json()
     ).then(
       data => {
@@ -16,7 +16,7 @@ function App() {
         setLgaCodes(data.lgaCodes)
       }
     ).catch(error => console.log(error))
-    fetch("/api/lga_details", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
+    fetch("/api/lgas", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
       res => res.json()
     ).then(
       data => {

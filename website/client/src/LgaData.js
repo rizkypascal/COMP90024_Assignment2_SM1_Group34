@@ -37,7 +37,7 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
 
     const handleSelect = (e, i) => {
         setValue(e)
-        fetch("/api/lgas/" + lgaCodes[i], { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
+        fetch("/api/twitter/all/lgas/" + lgaCodes[i], { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
             res => res.json()
         ).then(res => {
             setAurinLgaData(res.data)

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 from datetime import date
 from db_utils import DbUtils
@@ -18,28 +18,42 @@ def test():
     return {"data": ["test1", "test2", "test3"]}
 
 
-@ app.route("/api/lga_details/lga_names", methods=["GET"])
+@ app.route("/api/lgas", methods=["GET"])
 def info():
-    res1 = []
-    res2 = []
-    mango1 = {"selector": {}, "limit": 45}
-    for row in LGA_DB.find(mango1):
-        res1.append(row["properties"]["lga_name_2016"])
-        res2.append(row["properties"]["lga_code_2016"])
-    return {"lgaNames": res1, "lgaCodes": res2}
+    # Read params
+    params = request.args
+    compact = params.get("compact", False)
+    if compact in ("true", "True", 1):
+        compact = True
+
+    if compact:
+        res1 = []
+        res2 = []
+        mango1 = {"selector": {}, "limit": 45}
+        for row in LGA_DB.find(mango1):
+            res1.append(row["properties"]["lga_name_2016"])
+            res2.append(row["properties"]["lga_code_2016"])
+        return {"lgaNames": res1, "lgaCodes": res2}
+    else:
+        res1 = []
+        mango1 = {"selector": {}, "limit": 45}
+        for row in LGA_DB.find(mango1):
+            res1.append(row)
+        return {"lgaDetails": res1}
 
 
-@ app.route("/api/lga_details", methods=["GET"])
-def lgadetails():
-    res1 = []
-    mango1 = {"selector": {}, "limit": 45}
-    for row in LGA_DB.find(mango1):
-        res1.append(row)
-    return {"lgaDetails": res1}
+@ app.route("/api/twitter/<period>/lgas/<lga_id>", methods=["GET"])
+def twitter_per_lga(lga_id, period):
+    """_summary_
 
+    Args:
+        lga_id (_type_): _description_
 
-@ app.route("/api/lgas/<lga_id>", methods=["GET"])
-def lgas(lga_id):
+    Returns:
+        _type_: _description_
+    """
+    if period.lower() != "all":
+        return "Invalid period: should be one of [all]", 422
 
     with open("language.json", "r") as f:
         lang_mapper = json.load(f)
@@ -83,6 +97,54 @@ def lgas(lga_id):
             "name": properties["lga_name_2016"],
             "tweet_languages": tweet_languages
         }
+    }
+
+@ app.route("/api/twitter/<period>/lgas", methods=["GET"])
+def twitter_lgas(period):
+    """summary of twitter data per lgas
+
+    Args:
+        lga_id (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    if period.lower() != "all":
+        return "Invalid period: should be one of [all]", 422
+
+    with open("language.json", "r") as f:
+        lang_mapper = json.load(f)
+
+    lga_unique_lang = DbUtils.view(
+        db="twitter_historical",
+        design="matilda_test",
+        view="list_all_langs_in_lga",
+        group_level=1
+    )
+
+    if(lga_unique_lang is None):
+        return {"data": {}}
+
+    lgas = []
+    for row in lga_unique_lang:
+        lga_code = row["key"][0]
+        lang_codes = row["value"]
+
+        tweet_unique_languages = []
+        for lang_code in lang_codes:
+            lang_name = lang_mapper.get(lang_code, "")
+            tweet_unique_languages.append({
+                "code": lang_code,
+                "name": lang_name
+            })
+
+        lgas.append({
+            "lga_code_2016": lga_code,
+            "tweet_languages": tweet_unique_languages
+        })
+
+    return {
+        "data": lgas
     }
 
 
@@ -131,7 +193,6 @@ def census_lga(census_year, lga_id, category):
         return {"data": objects}
     except (couchdb.http.Unauthorized, couchdb.http.ResourceNotFound) as e:
         return "Data not found", 404
-
 
 if __name__ == "__main__":
     app.run(debug=True)
