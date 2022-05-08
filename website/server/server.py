@@ -13,6 +13,10 @@ LGA_DB = DbUtils.connect(db_name="lga")
 CORS = CORS()
 
 
+def get_tweet_count(input):
+    return input.get("tweet_count")
+
+
 @ app.route("/api/test", methods=["GET"])
 def test():
     return {"data": ["test1", "test2", "test3"]}
@@ -81,6 +85,7 @@ def twitter_per_lga(lga_id, period):
         return {"data": {}}
 
     tweet_languages = []
+    total_count = 0
 
     for row in lga_lang_count:
         if(row["key"][1] == str(lga_id)):
@@ -90,14 +95,20 @@ def twitter_per_lga(lga_id, period):
                     "name": lang_mapper[row["key"][0]],
                     "tweet_count": row["value"]
                 })
+                total_count += row["value"]
+    tweet_languages.sort(key=get_tweet_count, reverse=True)
+
+    for row in tweet_languages:
+        row["tweet_count"] = row["tweet_count"]/total_count
 
     return {
         "data": {
             "code": properties["lga_code_2016"],
             "name": properties["lga_name_2016"],
             "tweet_languages": tweet_languages
-        }
+        }, "total_count": total_count
     }
+
 
 @ app.route("/api/twitter/<period>/lgas", methods=["GET"])
 def twitter_lgas(period):
@@ -193,6 +204,7 @@ def census_lga(census_year, lga_id, category):
         return {"data": objects}
     except (couchdb.http.Unauthorized, couchdb.http.ResourceNotFound) as e:
         return "Data not found", 404
+
 
 if __name__ == "__main__":
     app.run(debug=True)
