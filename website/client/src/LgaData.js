@@ -21,10 +21,15 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
 
 
     const [aurinLgaData, setAurinLgaData] = useState([{ "name": "", "code": undefined, "tweet_languages": [] }])
+    const [aurinTweetTotal, setAurinTweetTotal] = useState([0])
+    const [aurinLanguageData, setAurinLanguageData] = useState([{ "code": "", "name": "", "tweet_count": 0 }])
     const [censusLanguageData, setCensusLanguageData] = useState([{ "data": [] }]);
     const [censusReligionData, setCensusReligionData] = useState([{}])
     const [censusAncestryData, setCensusAncestryData] = useState([{}])
     const [value, setValue] = useState('Please select an LGA.')
+    const [aurinColumns] = useState([
+        { field: 'name', headerName: 'Language', resizable: true, flex: 2 },
+        { field: 'tweet_count', headerName: "Proportion", resizable: true, flex: 1 },])
     const [languageColumns] = useState([
         { field: 'language', resizable: true, flex: 2 },
         { field: 'proportion', resizable: true, flex: 1 },])
@@ -41,28 +46,30 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
             res => res.json()
         ).then(res => {
             setAurinLgaData(res.data)
+            setAurinLanguageData(calcPercentage(res.data.tweet_languages, 'tweet_count'))
+            setAurinTweetTotal(res.total_count)
         }).catch(err => console.log(err))
         fetch("/api/census/2016/lgas/" + lgaCodes[i] + "/language", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
             res => res.json()
         ).then(res => {
-            setCensusLanguageData(calcPercentage(res.data))
+            setCensusLanguageData(calcPercentage(res.data, 'proportion'))
         }).catch(err => console.log(err))
         fetch("/api/census/2016/lgas/" + lgaCodes[i] + "/religion", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
             res => res.json()
         ).then(res => {
-            setCensusReligionData(calcPercentage(res.data))
+            setCensusReligionData(calcPercentage(res.data, 'proportion'))
         }).catch(err => console.log(err))
         fetch("/api/census/2016/lgas/" + lgaCodes[i] + "/ancestry", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
             res => res.json()
         ).then(res => {
-            setCensusAncestryData(calcPercentage(res.data))
+            setCensusAncestryData(calcPercentage(res.data, 'proportion'))
         }).catch(err => console.log(err))
     }
 
-    const calcPercentage = (input) => {
+    const calcPercentage = (input, key) => {
         for (let i = 0; i < input.length; i++) {
-            input[i]['proportion'] = (parseFloat(input[i]['proportion']) * 100).toFixed(2).toString() + "%"
-            console.log(input[i]['proportion'])
+            input[i][key] = (parseFloat(input[i][key]) * 100).toFixed(2).toString() + "%"
+            console.log(input[i][key])
         }
         return input;
 
@@ -96,9 +103,6 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                                                     e.target.openPopup()
 
                                                 },
-                                                // mouseout: (e) => {
-                                                //     e.target.closePopup()
-                                                // },
                                                 click: (e) => {
                                                     e.target.openPopup()
                                                     handleSelect(data.properties.lga_name_2016, i)
@@ -113,18 +117,6 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                         )}
                     </div >
                     <p></p>
-                    <Dropdown>
-                        <Dropdown.Toggle className="button" variant="success" id="dropdown-basic">
-                            {value}
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu variant="success">
-                            {lgaNames.map((data, i) => {
-                                return (<Dropdown.Item key={i} title={value} onClick={() => handleSelect(data, i)}
-                                >{data}</Dropdown.Item>)
-                            })}
-                        </Dropdown.Menu>
-                    </Dropdown>
                 </div>)
 
                 }
@@ -141,24 +133,24 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                     <div>
                         <p></p>
                         <h2 className="h2">{value}</h2>
+                        <b className="LGACode">LGA Code: {aurinLgaData.code}</b>
+                        <p>
+                        </p>
                         <div className="languageData">
                             <div className="column">
                                 <div>
                                     <h4 className="h4">Twitter Language Data</h4>
-                                    <p className="LGACode">LGA Code: {aurinLgaData.code}</p>
-                                    <p className="italics">Language: # Tweets Collected</p>
+                                    <p className="italics">Language: Proportion of Tweets Collected</p>
                                 </div>
 
-                                <div>{aurinLgaData.tweet_languages.map((data, k) => {
-                                    return (
-                                        <div>
-                                            <p key={k}>
-                                                {data.name}: '{data.code}' ----- {data.tweet_count}
-                                            </p>
+                                <div>
+                                    <div>
+                                        <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
+                                            <AgGridReact rowData={aurinLanguageData} columnDefs={aurinColumns}></AgGridReact>
                                         </div>
-
-                                    )
-                                })}
+                                    </div>
+                                    <p></p>
+                                    <i font-style="italics">Out of {aurinTweetTotal} total tweets collected for this LGA.</i>
                                 </div>
                             </div>
                             <div className="column" key={2}>
