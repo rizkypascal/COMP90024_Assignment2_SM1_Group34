@@ -58,7 +58,10 @@ if __name__ == "__main__":
     wait_till_next_run = 60
     polys = load_polygons()
     while True:
-        append_lga_to_tweets(polys, db)
+        try:
+            append_lga_to_tweets(polys, db)
+        except Exception as e:
+            print(f"ERROR occurred: {e}")
 
         print(f"Sleep for {wait_till_next_run} seconds")
         time.sleep(wait_till_next_run)
