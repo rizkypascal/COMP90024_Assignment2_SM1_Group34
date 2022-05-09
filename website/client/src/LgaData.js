@@ -1,4 +1,3 @@
-import { Dropdown } from "react-bootstrap";
 import { useState } from 'react';
 import Collapsible from 'react-collapsible';
 import { TileLayer, GeoJSON, MapContainer, Popup } from 'react-leaflet';
@@ -72,7 +71,6 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
             console.log(input[i][key])
         }
         return input;
-
     }
 
     return (
@@ -101,13 +99,12 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                                             return (<GeoJSON key={i} data={data} eventHandlers={{
                                                 mouseover: (e) => {
                                                     e.target.openPopup()
-
                                                 },
                                                 click: (e) => {
                                                     e.target.openPopup()
                                                     handleSelect(data.properties.lga_name_2016, i)
                                                 }
-                                            }} >
+                                            }}>
                                                 <Popup>{data.properties.lga_name_2016}</Popup>
                                             </GeoJSON>)
                                         })}
@@ -115,23 +112,18 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                                 </MapContainer>
                             </div>
                         )}
-                    </div >
+                    </div>
                     <p></p>
                 </div>)
-
                 }
             </div >
             <div className="lgaDataDisplay">
-
-
                 {(aurinLgaData.code === undefined) ? (
-                    <div>
-                        <p></p>
-                        < p > Please select an LGA to view its data</p>
+                    <div><p></p>
+                        <p> Please select an LGA to view its data</p>
                     </div>
                 ) : (
-                    <div>
-                        <p></p>
+                    <div><p></p>
                         <h2 className="h2">{value}</h2>
                         <b className="LGACode">LGA Code: {aurinLgaData.code}</b>
                         <p>
@@ -142,7 +134,6 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                                     <h4 className="h4">Twitter Language Data</h4>
                                     <p className="italics">Language: Proportion of Tweets Collected</p>
                                 </div>
-
                                 <div>
                                     <div>
                                         <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
@@ -156,33 +147,25 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                             <div className="column" key={2}>
                                 <h4 className="h4">Census Data</h4>
                                 <Collapsible trigger="Language: Proportion of First Language Speakers">
-                                    <div>
-                                        <p></p>
-                                        <div>
-                                            <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
-                                                <AgGridReact rowData={censusLanguageData} columnDefs={languageColumns}></AgGridReact>
-                                            </div>
+                                    <div><p></p><div>
+                                        <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
+                                            <AgGridReact rowData={censusLanguageData} columnDefs={languageColumns}></AgGridReact>
                                         </div>
                                     </div>
-                                </Collapsible>
-                                <p></p>
-                                <Collapsible trigger="Ancestry">
-                                    <p></p>
-                                    <div>
+                                    </div>
+                                </Collapsible><p></p><Collapsible trigger="Ancestry">
+                                    <p></p><div>
                                         <div>
                                             <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
                                                 <AgGridReact rowData={censusAncestryData} columnDefs={ancestryColumns}></AgGridReact>
                                             </div>
                                         </div>
                                     </div>
-                                </Collapsible>
-                                <p></p>
-                                <Collapsible trigger="Religion">
-                                    <p></p>
-                                    <div>
+                                </Collapsible><p></p><Collapsible trigger="Religion">
+                                    <p></p><div>
                                         <div>
                                             <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
-                                                <AgGridReact expandField="collapsed" rowData={censusReligionData} columnDefs={religionColumns}></AgGridReact>
+                                                <AgGridReact rowData={censusReligionData} columnDefs={religionColumns}></AgGridReact>
                                             </div>
                                         </div>
                                     </div>
@@ -190,11 +173,9 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                             </div>
                         </div>
                     </div>
-
                 )}
             </div>
         </div >
-
     );
 }
 
