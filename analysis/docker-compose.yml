@@ -1,0 +1,10 @@
+version: "3.3"
+services:
+  assign_lga:
+    build:
+      context: .
+      dockerfile: Dockerfile.lga
+    image: assign_lga
+    network_mode: host
+    environment:
+      - PYTHONUNBUFFERED=1
