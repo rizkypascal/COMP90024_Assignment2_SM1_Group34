@@ -22,7 +22,10 @@ def append_lga_to_tweets(polygons, db):
             },
             "extra.lga": {
                 "$exists": False
-            }
+            },
+            "lga_unknown": {
+                "$exists": False
+            },
         },
         "limit": batch_size,
         "skip": 0,
@@ -31,6 +34,8 @@ def append_lga_to_tweets(polygons, db):
     reach_last_doc = False
     batch = 1
     while not reach_last_doc:
+        print("batch", batch)
+
         doc_count = 0
         for doc in db.find(query):
             try:
@@ -46,7 +51,6 @@ def append_lga_to_tweets(polygons, db):
         if doc_count < batch_size:
             reach_last_doc = True
 
-        print("batch", batch)
 
 
 if __name__ == "__main__":
@@ -56,5 +60,5 @@ if __name__ == "__main__":
     while True:
         append_lga_to_tweets(polys, db)
 
-        time.sleep(wait_till_next_run)
         print(f"Sleep for {wait_till_next_run} seconds")
+        time.sleep(wait_till_next_run)
