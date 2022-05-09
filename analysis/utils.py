@@ -89,12 +89,17 @@ def assign_lga_to_tweet(polygons, doc):
             elif point.touches(polygon):
                 found_lga = True
 
+            old_extra = doc.get("extra", {})
             if found_lga is True:
-                print(f"Tweet ID: {doc['_id']}")
+                print(f"LGA FOUND. Tweet ID: {doc['_id']}")
                 lga = obj.get("data")
-                old_extra = doc.get("extra", {})
                 lga_data = {"lga": lga}
                 doc["extra"] = {**old_extra, **lga_data}
+                return doc
+            else:
+                print(f"LGA UNKNOWN. Tweet ID: {doc['_id']}")
+                lga_unknown = {"lga_unknown": True}
+                doc["extra"] = {**old_extra, **lga_unknown}
                 return doc
 
         return doc
