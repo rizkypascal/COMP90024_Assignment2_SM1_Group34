@@ -11,8 +11,8 @@ def main():
     ROOT_PATH = './'
     DATA_DIR = 'aurin_data'
     MAPPING_DIR = 'mapping'
-    G13c_PATH = os.path.join(ROOT_PATH, DATA_DIR, 'lga_G13c_lang_spoken_at_home_by_profic_by_sex_census_2016-5202467057275348071.json')
-    G13d_PATH = os.path.join(ROOT_PATH, DATA_DIR, 'lga_G13d_lang_spoken_at_home_by_profic_by_sex_census_2016-8416648648204931958.json')
+    G13c_PATH = os.path.join(ROOT_PATH, DATA_DIR, 'lga_g13c_lang_spoken_at_home_by_profic_by_sex_census_2016-5202467057275348071.json')
+    G13d_PATH = os.path.join(ROOT_PATH, DATA_DIR, 'lga_g13d_lang_spoken_at_home_by_profic_by_sex_census_2016-8416648648204931958.json')
     MAPPING_PATH = os.path.join(ROOT_PATH, MAPPING_DIR, 'g13_language_mapping.json')  # this mapping was preprocessed from AURIN metadata for G13
     OUTPUT_JSON_PATH = os.path.join(ROOT_PATH, 'census_LGA-G13_proportions.json')
 
@@ -20,7 +20,7 @@ def main():
     df_G13c = census_utils.read_census_json(G13c_PATH)
     df_G13d = census_utils.read_census_json(G13d_PATH)
     
-    # combines G13c and G13d, preprocess columns, and unpivot
+    # combines dataframes, preprocess columns, and unpivot
     df_G13 = process_G13_df(df_G13c, df_G13d)
     
     # calculates proportions and map variable names into attribute names
@@ -40,19 +40,19 @@ def process_G13_df(df_G13c, df_G13d):
     '''
     
     # combine G13c and G13d
-    df_G13 = df_G13c.join(df_G13d)
+    df = df_G13c.join(df_G13d)
 
     # drop and/or select only columns that we need
-    df_G13 = df_G13.loc[:, ~df_G13.columns.str.startswith('female_')]  # drop columns that start with 'female_'
-    df_G13 = df_G13.loc[:, ~df_G13.columns.str.startswith('person_tot_')]  # drop columns that start with 'person_tot_'
-    df_G13 = df_G13.loc[:, ~df_G13.columns.str.startswith('person_spks_lang_oth_')]  # drop columns that start with 'person_spks_lang_oth_'
-    df_G13 = df_G13.loc[:, ~df_G13.columns.str.endswith('_tot_tot')]  # drop columns that contain '_tot_tot'
-    df_G13 = df_G13.loc[:, df_G13.columns.str.endswith('_tot')]  # only take columns that end with '_tot'
+    df = df.loc[:, ~df.columns.str.startswith('female_')]  # drop columns that start with 'female_'
+    df = df.loc[:, ~df.columns.str.startswith('person_tot_')]  # drop columns that start with 'person_tot_'
+    df = df.loc[:, ~df.columns.str.startswith('person_spks_lang_oth_')]  # drop columns that start with 'person_spks_lang_oth_'
+    df = df.loc[:, ~df.columns.str.endswith('_tot_tot')]  # drop columns that contain '_tot_tot'
+    df = df.loc[:, df.columns.str.endswith('_tot')]  # only take columns that end with '_tot'
 
     # unpivot df
-    df_G13_unpivot = pd.melt(df_G13.reset_index(), id_vars=df_G13.index.names)
+    df_unpivot = pd.melt(df.reset_index(), id_vars=df.index.names)
 
-    return df_G13_unpivot
+    return df_unpivot
 
 
 if __name__ == '__main__':
