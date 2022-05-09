@@ -1,7 +1,6 @@
 from typing import Callable
 from db_utils import DbUtils
 from twitter_utils import TwitterUtils
-from utils import load_polygons, assign_lga_to_tweet
 import tweepy
 import couchdb
 import logging

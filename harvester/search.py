@@ -1,5 +1,5 @@
 from twitter_utils import TwitterUtils
-from utils import DbUtils
+from db_utils import DbUtils
 import tweepy
 import couchdb
 import logging

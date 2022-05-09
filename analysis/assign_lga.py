@@ -1,4 +1,5 @@
-import numpy as np
+import time
+import time
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 
@@ -7,18 +8,20 @@ from db_utils import DbUtils
 from utils import load_polygons, assign_lga_to_tweet
 
 
-def append_lga_to_tweets(polygons):
+def append_lga_to_tweets(polygons, db):
     """Assign LGA to tweet.
 
     Args:
         polygons (_type_): _description_
     """
-    db = DbUtils.connect()
     batch_size = 100
     query = {
         "selector": {
             "geo": {
                 "$ne": None
+            },
+            "extra.lga": {
+                "$exists": False
             }
         },
         "limit": batch_size,
@@ -47,6 +50,11 @@ def append_lga_to_tweets(polygons):
 
 
 if __name__ == "__main__":
+    db = DbUtils.connect("twitter_historical")
+    wait_till_next_run = 60
     polys = load_polygons()
-    append_lga_to_tweets(polys)
-    
+    while True:
+        append_lga_to_tweets(polys, db)
+
+        time.sleep(wait_till_next_run)
+        print(f"Sleep for {wait_till_next_run} seconds")
