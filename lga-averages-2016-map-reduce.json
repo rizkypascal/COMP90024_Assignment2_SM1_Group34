@@ -1,0 +1,32 @@
+{
+    "_id": "_design/test1",
+    "_rev": "15-33d06049326bc7d91754f9b4d0584515",
+    "views": {
+      "median-weekly-rent-2": {
+        "map": "function (doc) {\n  emit([doc.properties.median_rent_weekly, doc.properties.lga_name_2016], doc.properties.lga_name_2016);\n}"
+      },
+      "median-weekly-rent-1": {
+        "reduce": "_sum",
+        "map": "function (doc) {\n  emit(doc.properties.lga_name_2016, doc.properties.median_rent_weekly);\n}"
+      },
+      "median-monthly-mortgage-1": {
+        "map": "function (doc) {\n  emit(doc.properties.lga_name_2016, doc.properties.median_mortgage_repay_monthly);\n}"
+      },
+      "median-monthly-mortgage-2": {
+        "map": "function (doc) {\n  emit([doc.properties.median_mortgage_repay_monthly, doc.properties.lga_name_2016], doc.properties.lga_name_2016);\n}"
+      },
+      "median-age-2": {
+        "map": "function (doc) {\n  emit([doc.properties.median_age_persons, doc.properties.lga_name_2016], doc.properties.lga_name_2016);\n}"
+      },
+      "median-age-1": {
+        "map": "function (doc) {\n  emit(doc.properties.lga_name_2016, doc.properties.median_age_persons);\n}"
+      },
+      "median-weekly-income-2": {
+        "map": "function (doc) {\n  emit([doc.properties.median_tot_prsnl_inc_weekly, doc.properties.lga_name_2016], doc.properties.lga_name_2016);\n}"
+      },
+      "median-weekly-income-1": {
+        "map": "function (doc) {\n  emit(doc.properties.lga_name_2016, doc.properties.median_tot_prsnl_inc_weekly);\n}"
+      }
+    },
+    "language": "javascript"
+  }

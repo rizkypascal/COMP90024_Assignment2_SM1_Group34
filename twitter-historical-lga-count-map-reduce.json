@@ -1,0 +1,18 @@
+{
+    "_id": "_design/lga_count",
+    "_rev": "9-3817815778069569ff3dfebe70521964",
+    "views": {
+      "lga-count": {
+        "reduce": "function (keys, values, rereduce) {\n  if (rereduce) {\n    return sum(values);\n  } else {\n    return values.length;\n  }\n}",
+        "map": "function (doc) {\n  emit(doc.extra.lga.lga_code_2016, 1);\n}"
+      },
+      "lga-language-count": {
+        "reduce": "function (keys, values, rereduce) {\n  if (rereduce) {\n    return sum(values);\n  } else {\n    return values.length;\n  }\n}",
+        "map": "function (doc) {\n  emit([doc.lang, doc.extra.lga.lga_code_2016], 1);\n}"
+      }
+    },
+    "language": "javascript",
+    "options": {
+      "partitioned": false
+    }
+  }
