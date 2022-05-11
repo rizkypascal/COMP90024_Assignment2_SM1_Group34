@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 import { TileLayer, GeoJSON, MapContainer, Popup } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import { AgGridReact } from 'ag-grid-react'; // the AG Grid React Component
@@ -25,7 +25,7 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
     const [censusLanguageData, setCensusLanguageData] = useState([{ "data": [] }]);
     const [censusReligionData, setCensusReligionData] = useState([{}])
     const [censusAncestryData, setCensusAncestryData] = useState([{}])
-    const [value, setValue] = useState('Please select an LGA.')
+    const [value, setValue] = useState('Please select an LGA')
     const [aurinColumns] = useState([
         { field: 'name', headerName: 'Language', resizable: true, flex: 1 },
         { field: 'tweet_count', headerName: "Proportion", resizable: true, flex: 1 },])
@@ -114,6 +114,18 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                         )}
                     </div>
                     <p></p>
+                    <Dropdown>
+                        <Dropdown.Toggle className="button" variant="success" id="dropdown-basic">
+                            {value}
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu variant="success">
+                            {lgaNames.map((data, i) => {
+                                return (<Dropdown.Item key={i} title={value} onClick={() => handleSelect(data, i)}
+                                >{data}</Dropdown.Item>)
+                            })}
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </div>)
                 }
             </div >
@@ -124,7 +136,6 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                     </div>
                 ) : (
                     <div className="row"><p></p>
-                        <h2 className="h2">{value}</h2>
                         <b className="LGACode">LGA Code: {aurinLgaData.code}</b>
                         <div className="languageData">
                             <div className="col" key={1}>
