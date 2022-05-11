@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import 'react-bootstrap';
-import Collapsible from 'react-collapsible';
 import { TileLayer, GeoJSON, MapContainer, Popup } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import { AgGridReact } from 'ag-grid-react'; // the AG Grid React Component
