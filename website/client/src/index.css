@@ -40,9 +40,9 @@
 }
 
 .content {
-    max-width: 75%;
+    max-width: 80%;
     margin: 40px auto;
-    padding: 20px;
+    padding: 10px;
 }
 
 .h1 {
@@ -59,17 +59,9 @@
     font-weight: 400;
 }
 
-
 .h4 {
     font-weight: 400;
     color: #198753;
-}
-
-.column {
-    display: flex;
-    flex-direction: column;
-    flex-basis: 100%;
-    flex: 1;
 }
 
 .languageData {
@@ -86,7 +78,6 @@
 .Collapsible__trigger {
     font-style: italic;
     text-decoration: underline;
-
 }
 
 .Collapsible__trigger:hover {
@@ -101,4 +92,10 @@
 
 .leaflet-container {
     height: 500px;
+}
+
+.box {
+    margin: 2.5%;
+    padding: 5%;
+    text-align: left;
 }

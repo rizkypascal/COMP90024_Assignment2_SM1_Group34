@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import 'react-bootstrap';
 import Collapsible from 'react-collapsible';
 import { TileLayer, GeoJSON, MapContainer, Popup } from 'react-leaflet';
 import { Icon } from 'leaflet';
@@ -27,13 +28,13 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
     const [censusAncestryData, setCensusAncestryData] = useState([{}])
     const [value, setValue] = useState('Please select an LGA.')
     const [aurinColumns] = useState([
-        { field: 'name', headerName: 'Language', resizable: true, flex: 2 },
+        { field: 'name', headerName: 'Language', resizable: true, flex: 1 },
         { field: 'tweet_count', headerName: "Proportion", resizable: true, flex: 1 },])
     const [languageColumns] = useState([
-        { field: 'language', resizable: true, flex: 2 },
+        { field: 'language', resizable: true, flex: 1 },
         { field: 'proportion', resizable: true, flex: 1 },])
     const [ancestryColumns] = useState([
-        { field: 'ancestry', resizable: true, flex: 2 },
+        { field: 'ancestry', resizable: true, flex: 1 },
         { field: 'proportion', resizable: true, flex: 1 },])
     const [religionColumns] = useState([
         { field: 'religion', resizable: true, flex: 2 },
@@ -123,20 +124,17 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                         <p> Please select an LGA to view its data</p>
                     </div>
                 ) : (
-                    <div><p></p>
+                    <div className="row"><p></p>
                         <h2 className="h2">{value}</h2>
                         <b className="LGACode">LGA Code: {aurinLgaData.code}</b>
-                        <p>
-                        </p>
                         <div className="languageData">
-                            <div className="column">
-                                <div>
+                            <div className="col" key={1}>
+                                <div className="box">
                                     <h4 className="h4">Twitter Language Data</h4>
-                                    <p className="italics">Language: Proportion of Tweets Collected</p>
-                                </div>
-                                <div>
+                                    <b className='italics'>Language: Proportion of Tweets Collected</b>
+                                    <p></p>
                                     <div>
-                                        <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
+                                        <div className="ag-theme-alpine" style={{ height: 400, width: 300 }}>
                                             <AgGridReact rowData={aurinLanguageData} columnDefs={aurinColumns}></AgGridReact>
                                         </div>
                                     </div>
@@ -144,32 +142,42 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                                     <i font-style="italics">Out of {aurinTweetTotal} total tweets collected for this LGA.</i>
                                 </div>
                             </div>
-                            <div className="column" key={2}>
-                                <h4 className="h4">Census Data</h4>
-                                <Collapsible trigger="Language: Proportion of First Language Speakers">
-                                    <div><p></p><div>
-                                        <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
-                                            <AgGridReact rowData={censusLanguageData} columnDefs={languageColumns}></AgGridReact>
-                                        </div>
+                            <div className="col" key={2}>
+                                <div className="box">
+                                    <h4 className="h4">Census Data</h4>
+                                    <b className='italics'>Language: Proportion of First Language Speakers</b>
+                                    <p></p>
+                                    <div className="ag-theme-alpine" style={{ height: 200, width: 300 }}>
+                                        <AgGridReact rowData={censusLanguageData} columnDefs={languageColumns}></AgGridReact>
                                     </div>
-                                    </div>
-                                </Collapsible><p></p><Collapsible trigger="Ancestry">
+                                    <p></p><b className='italics'>Ancestry</b>
                                     <p></p><div>
                                         <div>
-                                            <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
+                                            <div className="ag-theme-alpine" style={{ height: 200, width: 300 }}>
                                                 <AgGridReact rowData={censusAncestryData} columnDefs={ancestryColumns}></AgGridReact>
                                             </div>
                                         </div>
                                     </div>
-                                </Collapsible><p></p><Collapsible trigger="Religion">
+                                </div>
+                            </div>
+                            <div className="col" key={3}>
+                                <div className="box">
+                                    <h4 className='h4'>&nbsp;</h4>
+                                    <b className='italics'>Country of Birth</b>
                                     <p></p><div>
-                                        <div>
-                                            <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
-                                                <AgGridReact rowData={censusReligionData} columnDefs={religionColumns}></AgGridReact>
-                                            </div>
+                                        <div className="ag-theme-alpine" style={{ height: 200, width: 300 }}>
+                                            <AgGridReact rowData={censusAncestryData} columnDefs={ancestryColumns}></AgGridReact>
                                         </div>
                                     </div>
-                                </Collapsible>
+                                    <p></p>
+                                    <b className='italics'>Religion</b>
+                                    <p></p>
+                                    <div>
+                                        <div className="ag-theme-alpine" style={{ height: 200, width: 300 }}>
+                                            <AgGridReact rowData={censusReligionData} columnDefs={religionColumns}></AgGridReact>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
