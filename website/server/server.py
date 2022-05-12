@@ -25,30 +25,30 @@ def test():
 @ app.route("/api/lgas", methods=["GET"])
 def info():
     # Read params
-    params = request.args
-    compact = params.get("compact", False)
-    if compact in ("true", "True", 1):
-        compact = True
+    with app.app_context():
+        compact = request.args.get("compact", False)
+        if compact in ("true", "True", 1):
+            compact = True
 
-    if compact:
-        res1 = []
-        res2 = []
-        mango1 = {"selector": {}, "limit": 45}
-        for row in LGA_DB.find(mango1):
-            res1.append(row["properties"]["lga_name_2016"])
-            res2.append(row["properties"]["lga_code_2016"])
-        return {"lgaNames": res1, "lgaCodes": res2}
-    else:
-        res1 = []
-        mango1 = {"selector": {}, "limit": 45}
-        for row in LGA_DB.find(mango1):
-            res1.append(row)
-        return {"lgaDetails": res1}
+        if compact:
+            res1 = []
+            res2 = []
+            mango1 = {"selector": {}, "limit": 45}
+            for row in LGA_DB.find(mango1):
+                res1.append(row["properties"]["lga_name_2016"])
+                res2.append(row["properties"]["lga_code_2016"])
+            return {"lgaNames": res1, "lgaCodes": res2}
+        else:
+            res1 = []
+            mango1 = {"selector": {}, "limit": 45}
+            for row in LGA_DB.find(mango1):
+                res1.append(row)
+            return {"lgaDetails": res1}
 
 
 @ app.route("/api/twitter/<period>/lgas/<lga_id>", methods=["GET"])
 def twitter_per_lga(lga_id, period):
-    """_summary_
+    """Get Twitter data summary per LGA.
 
     Args:
         lga_id (_type_): _description_
@@ -112,7 +112,7 @@ def twitter_per_lga(lga_id, period):
 
 @ app.route("/api/twitter/<period>/lgas", methods=["GET"])
 def twitter_lgas(period):
-    """summary of twitter data per lgas
+    """Summary of twitter data for all LGAs.
 
     Args:
         lga_id (_type_): _description_
@@ -161,6 +161,16 @@ def twitter_lgas(period):
 
 @ app.route("/api/census/<census_year>/lgas/<lga_id>/<category>", methods=["GET"])
 def census_lga(census_year, lga_id, category):
+    """Get census data per LGA.
+
+    Args:
+        census_year (_type_): _description_
+        lga_id (_type_): _description_
+        category (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
 
     try:
         census_year = int(census_year)
@@ -208,9 +218,3 @@ def census_lga(census_year, lga_id, category):
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-# Test route
-
-
-print('hello')
-print(info())
