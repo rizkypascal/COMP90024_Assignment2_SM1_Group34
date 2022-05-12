@@ -8,6 +8,8 @@ function App() {
   const [lgaCodes, setLgaCodes] = useState([[]]);
 
   useEffect(() => {
+
+    document.title = "Cultural & Language Diversity in Victoria"
     fetch("/api/lgas?compact=true", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
       res => res.json()
     ).then(

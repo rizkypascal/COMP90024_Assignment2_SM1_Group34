@@ -1,6 +1,5 @@
-import { Dropdown } from "react-bootstrap";
 import { useState } from 'react';
-import Collapsible from 'react-collapsible';
+import { Dropdown } from 'react-bootstrap';
 import { TileLayer, GeoJSON, MapContainer, Popup } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import { AgGridReact } from 'ag-grid-react'; // the AG Grid React Component
@@ -21,15 +20,20 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
 
 
     const [aurinLgaData, setAurinLgaData] = useState([{ "name": "", "code": undefined, "tweet_languages": [] }])
+    const [aurinTweetTotal, setAurinTweetTotal] = useState([0])
+    const [aurinLanguageData, setAurinLanguageData] = useState([{ "code": "", "name": "", "tweet_count": 0 }])
     const [censusLanguageData, setCensusLanguageData] = useState([{ "data": [] }]);
     const [censusReligionData, setCensusReligionData] = useState([{}])
     const [censusAncestryData, setCensusAncestryData] = useState([{}])
-    const [value, setValue] = useState('Please select an LGA.')
+    const [value, setValue] = useState('Please select an LGA')
+    const [aurinColumns] = useState([
+        { field: 'name', headerName: 'Language', resizable: true, flex: 1 },
+        { field: 'tweet_count', headerName: "Proportion", resizable: true, flex: 1 },])
     const [languageColumns] = useState([
-        { field: 'language', resizable: true, flex: 2 },
+        { field: 'language', resizable: true, flex: 1 },
         { field: 'proportion', resizable: true, flex: 1 },])
     const [ancestryColumns] = useState([
-        { field: 'ancestry', resizable: true, flex: 2 },
+        { field: 'ancestry', resizable: true, flex: 1 },
         { field: 'proportion', resizable: true, flex: 1 },])
     const [religionColumns] = useState([
         { field: 'religion', resizable: true, flex: 2 },
@@ -41,31 +45,32 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
             res => res.json()
         ).then(res => {
             setAurinLgaData(res.data)
+            setAurinLanguageData(calcPercentage(res.data.tweet_languages, 'tweet_count'))
+            setAurinTweetTotal(res.total_count)
         }).catch(err => console.log(err))
         fetch("/api/census/2016/lgas/" + lgaCodes[i] + "/language", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
             res => res.json()
         ).then(res => {
-            setCensusLanguageData(calcPercentage(res.data))
+            setCensusLanguageData(calcPercentage(res.data, 'proportion'))
         }).catch(err => console.log(err))
         fetch("/api/census/2016/lgas/" + lgaCodes[i] + "/religion", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
             res => res.json()
         ).then(res => {
-            setCensusReligionData(calcPercentage(res.data))
+            setCensusReligionData(calcPercentage(res.data, 'proportion'))
         }).catch(err => console.log(err))
         fetch("/api/census/2016/lgas/" + lgaCodes[i] + "/ancestry", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
             res => res.json()
         ).then(res => {
-            setCensusAncestryData(calcPercentage(res.data))
+            setCensusAncestryData(calcPercentage(res.data, 'proportion'))
         }).catch(err => console.log(err))
     }
 
-    const calcPercentage = (input) => {
+    const calcPercentage = (input, key) => {
         for (let i = 0; i < input.length; i++) {
-            input[i]['proportion'] = (parseFloat(input[i]['proportion']) * 100).toFixed(2).toString() + "%"
-            console.log(input[i]['proportion'])
+            input[i][key] = (parseFloat(input[i][key]) * 100).toFixed(2).toString() + "%"
+            console.log(input[i][key])
         }
         return input;
-
     }
 
     return (
@@ -94,16 +99,12 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                                             return (<GeoJSON key={i} data={data} eventHandlers={{
                                                 mouseover: (e) => {
                                                     e.target.openPopup()
-
                                                 },
-                                                // mouseout: (e) => {
-                                                //     e.target.closePopup()
-                                                // },
                                                 click: (e) => {
                                                     e.target.openPopup()
                                                     handleSelect(data.properties.lga_name_2016, i)
                                                 }
-                                            }} >
+                                            }}>
                                                 <Popup>{data.properties.lga_name_2016}</Popup>
                                             </GeoJSON>)
                                         })}
@@ -111,7 +112,7 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                                 </MapContainer>
                             </div>
                         )}
-                    </div >
+                    </div>
                     <p></p>
                     <Dropdown>
                         <Dropdown.Toggle className="button" variant="success" id="dropdown-basic">
@@ -126,83 +127,73 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>)
-
                 }
             </div >
             <div className="lgaDataDisplay">
-
-
                 {(aurinLgaData.code === undefined) ? (
-                    <div>
-                        <p></p>
-                        < p > Please select an LGA to view its data</p>
+                    <div><p></p>
+                        <p> Please select an LGA to view its data</p>
                     </div>
                 ) : (
-                    <div>
-                        <p></p>
-                        <h2 className="h2">{value}</h2>
+                    <div className="row"><p></p>
+                        <b className="LGACode">LGA Code: {aurinLgaData.code}</b>
                         <div className="languageData">
-                            <div className="column">
-                                <div>
+                            <div className="col" key={1}>
+                                <div className="box">
                                     <h4 className="h4">Twitter Language Data</h4>
-                                    <p className="LGACode">LGA Code: {aurinLgaData.code}</p>
-                                    <p className="italics">Language: # Tweets Collected</p>
-                                </div>
-
-                                <div>{aurinLgaData.tweet_languages.map((data, k) => {
-                                    return (
-                                        <div>
-                                            <p key={k}>
-                                                {data.name}: '{data.code}' ----- {data.tweet_count}
-                                            </p>
-                                        </div>
-
-                                    )
-                                })}
-                                </div>
-                            </div>
-                            <div className="column" key={2}>
-                                <h4 className="h4">Census Data</h4>
-                                <Collapsible trigger="Language: Proportion of First Language Speakers">
-                                    <div>
-                                        <p></p>
-                                        <div>
-                                            <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
-                                                <AgGridReact rowData={censusLanguageData} columnDefs={languageColumns}></AgGridReact>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Collapsible>
-                                <p></p>
-                                <Collapsible trigger="Ancestry">
+                                    <b className='italics'>Language: Proportion of Tweets Collected</b>
                                     <p></p>
                                     <div>
+                                        <div className="ag-theme-alpine" style={{ height: 400, width: 300 }}>
+                                            <AgGridReact rowData={aurinLanguageData} columnDefs={aurinColumns}></AgGridReact>
+                                        </div>
+                                    </div>
+                                    <p></p>
+                                    <i font-style="italics">Out of {aurinTweetTotal} total tweets collected for this LGA.</i>
+                                </div>
+                            </div>
+                            <div className="col" key={2}>
+                                <div className="box">
+                                    <h4 className="h4">Census Data</h4>
+                                    <b className='italics'>Language: Proportion of First Language Speakers</b>
+                                    <p></p>
+                                    <div className="ag-theme-alpine" style={{ height: 200, width: 300 }}>
+                                        <AgGridReact rowData={censusLanguageData} columnDefs={languageColumns}></AgGridReact>
+                                    </div>
+                                    <p></p><b className='italics'>Ancestry</b>
+                                    <p></p><div>
                                         <div>
-                                            <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
+                                            <div className="ag-theme-alpine" style={{ height: 200, width: 300 }}>
                                                 <AgGridReact rowData={censusAncestryData} columnDefs={ancestryColumns}></AgGridReact>
                                             </div>
                                         </div>
                                     </div>
-                                </Collapsible>
-                                <p></p>
-                                <Collapsible trigger="Religion">
-                                    <p></p>
-                                    <div>
-                                        <div>
-                                            <div className="ag-theme-alpine" style={{ height: 400, width: 400 }}>
-                                                <AgGridReact expandField="collapsed" rowData={censusReligionData} columnDefs={religionColumns}></AgGridReact>
-                                            </div>
+                                </div>
+                            </div>
+                            <div className="col" key={3}>
+                                <div className="box">
+                                    <h4 className='h4'>&nbsp;</h4>
+                                    <b className='italics'>Country of Birth</b>
+                                    <p></p><div>
+                                        <div className="ag-theme-alpine" style={{ height: 200, width: 300 }}>
+                                            <AgGridReact rowData={censusAncestryData} columnDefs={ancestryColumns}></AgGridReact>
                                         </div>
                                     </div>
-                                </Collapsible>
+                                    <p></p>
+                                    <b className='italics'>Religion</b>
+                                    <p></p>
+                                    <div>
+                                        <div className="ag-theme-alpine" style={{ height: 200, width: 300 }}>
+                                            <AgGridReact rowData={censusReligionData} columnDefs={religionColumns}></AgGridReact>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
                 )}
             </div>
         </div >
-
     );
 }
 
