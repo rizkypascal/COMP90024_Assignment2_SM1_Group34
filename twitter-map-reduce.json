@@ -1,0 +1,35 @@
+{
+    "_id": "_design/test",
+    "_rev": "140-19bbc1796804c97142a1c54753d37f01",
+    "views": {
+      "total_count_langs": {
+        "reduce": "_count",
+        "map": "function (doc) {\n  emit(doc.lang, 1);\n}"
+      },
+      "total_count_langs_that_have_geo": {
+        "reduce": "_count",
+        "map": "function (doc) {\n  if (doc.geo !== null) {\n    emit(doc.lang, doc.geo, 1);\n  }\n}"
+      },
+      "lang_count_in_lga_names": {
+        "reduce": "_sum",
+        "map": "function (doc) {\n  emit([doc.extra.lga.lga_name_2016, doc.lang], 1);\n}"
+      },
+      "count_tweets_in_lga_names": {
+        "reduce": "_count",
+        "map": "function (doc) {\n  emit(doc.extra.lga.lga_name_2016, 1);\n}"
+      },
+      "list_all_langs_in_lga_names": {
+        "reduce": "function (keys, values, rereduce) {\n  var unique = {};\n  var getUniqueValues = function(values) {\n    for (i = 0; i < values.length; i++) {\n      if (!(values[i] in unique)) {\n        unique[values[i]] = null;\n      }\n    }\n  }\n\n  if (rereduce === true) {\n    for (j = 0; j < values.length; j++) {\n      getUniqueValues(values[j]);\n    }\n    return Object.keys(unique);\n  } else {\n    getUniqueValues(values);\n    return Object.keys(unique);\n  }\n}",
+        "map": "function (doc) {\n  emit([doc.extra.lga.lga_name_2016, doc.lang], doc.lang);\n}"
+      },
+      "list_all_langs_in_lga": {
+        "reduce": "function (keys, values, rereduce) {\n  var unique = {};\n  var getUniqueValues = function(values) {\n    for (i = 0; i < values.length; i++) {\n      if (!(values[i] in unique)) {\n        unique[values[i]] = null;\n      }\n    }\n  }\n\n  if (rereduce === true) {\n    for (j = 0; j < values.length; j++) {\n      getUniqueValues(values[j]);\n    }\n    return Object.keys(unique);\n  } else {\n    getUniqueValues(values);\n    return Object.keys(unique);\n  }\n}",
+        "map": "function (doc) {\n  emit([doc.extra.lga.lga_code_2016, doc.lang], doc.lang);\n}"
+      }
+    },
+    "language": "javascript",
+    "options": {
+      "partitioned": false
+    },
+    "indexes": {}
+  }
