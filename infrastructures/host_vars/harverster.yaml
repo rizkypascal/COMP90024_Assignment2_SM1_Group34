@@ -1,8 +1,10 @@
 # src
-src_dir: ../harvester
+harvester_src_dir: ../harvester
+annotator_src_dir: ../annotator
 
 # dest
-app_dir: harvester
+harvester_app_dir: harvester
+annotator_app_dir: annotator
 ansible_user: ubuntu
 
 # app keys

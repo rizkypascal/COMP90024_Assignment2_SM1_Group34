@@ -1,7 +1,7 @@
 - name: Create Harvester directory
   become: yes
   ansible.builtin.file:
-    path: "{{ app_dir }}"
+    path: "{{ harvester_app_dir }}"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     recurse: yes
@@ -10,8 +10,8 @@
 - name: Copy harverster project to remote host
   become: yes
   ansible.builtin.copy:
-    src: "{{ src_dir }}/"
-    dest: "{{ app_dir }}"
+    src: "{{ harvester_src_dir }}/"
+    dest: "{{ harvester_app_dir }}"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
 
@@ -19,14 +19,48 @@
   become: yes
   ansible.builtin.template:
     src: config.json.j2
-    dest: "{{ app_dir }}/config.json"
+    dest: "{{ harvester_app_dir }}/config.json"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
 
 - name: Run docker compose
   become: yes
   community.docker.docker_compose:
-    project_src: "{{ app_dir }}"
+    project_src: "{{ harvester_app_dir }}"
+    pull: no
+    state: present
+    remove_orphans: yes
+    recreate: always
+
+- name: Create annotator directory
+  become: yes
+  ansible.builtin.file:
+    path: "{{ annotator_app_dir }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    recurse: yes
+    state: directory
+
+- name: Copy annotator project to remote host
+  become: yes
+  ansible.builtin.copy:
+    src: "{{ annotator_src_dir }}/"
+    dest: "{{ annotator_app_dir }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Configure compose
+  become: yes
+  ansible.builtin.template:
+    src: config.json.j2
+    dest: "{{ annotator_app_dir }}/config.json"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Run docker compose
+  become: yes
+  community.docker.docker_compose:
+    project_src: "{{ annotator_app_dir }}"
     pull: no
     state: present
     remove_orphans: yes
