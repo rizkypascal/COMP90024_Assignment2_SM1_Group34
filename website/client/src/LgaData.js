@@ -25,6 +25,8 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
     const [censusLanguageData, setCensusLanguageData] = useState([{ "data": [] }]);
     const [censusReligionData, setCensusReligionData] = useState([{}])
     const [censusAncestryData, setCensusAncestryData] = useState([{}])
+
+    const [countryOfBirthData, setCountryOfBirthData] = useState([{}])
     const [value, setValue] = useState('Please select an LGA')
     const [aurinColumns] = useState([
         { field: 'name', headerName: 'Language', resizable: true, flex: 1 },
@@ -38,6 +40,10 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
     const [religionColumns] = useState([
         { field: 'religion', resizable: true, flex: 2 },
         { field: 'proportion', resizable: true, flex: 1 },])
+    const [countryBirthColumns] = useState([
+        { field: 'country_of_birth', headerName: 'Country', resizable: true, flex: 1 },
+        { field: 'proportion', resizable: true, flex: 1 }
+    ])
 
     const handleSelect = (e, i) => {
         setValue(e)
@@ -57,6 +63,12 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
             res => res.json()
         ).then(res => {
             setCensusReligionData(calcPercentage(res.data, 'proportion'))
+        }).catch(err => console.log(err))
+        fetch("/api/census/2016/lgas/" + lgaCodes[i] + "/country_of_birth", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
+            res => res.json()
+        ).then(res => {
+            console.log(res)
+            setCountryOfBirthData(calcPercentage(res.data, 'proportion'))
         }).catch(err => console.log(err))
         fetch("/api/census/2016/lgas/" + lgaCodes[i] + "/ancestry", { "methods": "GET", headers: { "Content-Type": "application/json" } }).then(
             res => res.json()
@@ -155,7 +167,7 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                             <div className="col" key={2}>
                                 <div className="box">
                                     <h4 className="h4">Census Data</h4>
-                                    <b className='italics'>Language: Proportion of First Language Speakers</b>
+                                    <b className='italics'>Language Spoken At Home</b>
                                     <p></p>
                                     <div className="ag-theme-alpine" style={{ height: 200, width: 300 }}>
                                         <AgGridReact rowData={censusLanguageData} columnDefs={languageColumns}></AgGridReact>
@@ -176,7 +188,7 @@ const LgaData = ({ lgaNames, lgaCodes, geoJSONData }) => {
                                     <b className='italics'>Country of Birth</b>
                                     <p></p><div>
                                         <div className="ag-theme-alpine" style={{ height: 200, width: 300 }}>
-                                            <AgGridReact rowData={censusAncestryData} columnDefs={ancestryColumns}></AgGridReact>
+                                            <AgGridReact rowData={countryOfBirthData} columnDefs={countryBirthColumns}></AgGridReact>
                                         </div>
                                     </div>
                                     <p></p>
