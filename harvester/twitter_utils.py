@@ -1,8 +1,16 @@
+"""
+    COMP90024 - Group 34 - Semester 1 2022:
+    - Juny Kesumadewi (197751); Melbourne, Australia
+    - Georgia Lewis (982172); Melbourne, Australia
+    - Vilberto Noerjanto (553926); Melbourne, Australia
+    - Matilda O’Connell (910394); Melbourne, Australia
+    - Rizky Totong (1139981); Melbourne, Australia
+"""
+
 import os
 import json
 import tweepy
 import couchdb
-
 
 class TwitterUtils:
     def load_config(self):
@@ -14,21 +22,9 @@ class TwitterUtils:
 
         return credential
 
-
     def client(self):
         credential = self.load_config()
         auth = tweepy.OAuthHandler(credential["api_key"], credential["api_secret"])
         auth.set_access_token(credential["access_token"], credential["access_token_secret"])
         return tweepy.API(auth, wait_on_rate_limit=True)
-
-    # def db(self):
-    #     credential = self.load_config()
-    #     username = credential["db_username"]
-    #     password = credential["db_password"]
-    #     host = credential["db_host"]
-    #     port = credential["db_port"]
-    #     db_name = credential["db_name"]
-
-    #     server = couchdb.Server(f"http://{username}:{password}@{host}:{port}")
-    #     return server[db_name]
     
