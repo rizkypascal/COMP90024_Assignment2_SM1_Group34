@@ -1,16 +1,18 @@
+"""
+    COMP90024 - Group 34 - Semester 1 2022:
+    - Juny Kesumadewi (197751); Melbourne, Australia
+    - Georgia Lewis (982172); Melbourne, Australia
+    - Vilberto Noerjanto (553926); Melbourne, Australia
+    - Matilda O’Connell (910394); Melbourne, Australia
+    - Rizky Totong (1139981); Melbourne, Australia
+"""
+
 from twitter_utils import TwitterUtils
 from db_utils import DbUtils
 import tweepy
 import couchdb
 import logging
 import logger
-
-"""
-    TODO:
-        - error handling duplicate entry on tweet
-        - error handling when reach limit
-        - filtering with location, maxId / sinceId
-"""
 
 tweets_count = 0 # to count how many tweets have been saved
 
