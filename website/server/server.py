@@ -14,12 +14,8 @@ CORS = CORS()
 
 
 def get_tweet_count(input):
+    """Get tweet_count attribute (for sorting)."""
     return input.get("tweet_count")
-
-
-@ app.route("/api/test", methods=["GET"])
-def test():
-    return {"data": ["test1", "test2", "test3"]}
 
 
 @ app.route("/api/lgas", methods=["GET"])
