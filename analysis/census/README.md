@@ -14,6 +14,11 @@ pip install -r requirements.txt
 --type CENSUS_DATA_TYPE 
 [--year CENSUS_YEAR]
 ```
+## To rerun census pre-processing 
+```
+cd census
+python census_preprocess.py
+```
 ## Upload pre-processed census JSON file
 Example:
 ```
