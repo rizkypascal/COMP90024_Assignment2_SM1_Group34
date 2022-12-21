@@ -1,4 +1,4 @@
-# COMP90024 2022 Sem 1 - Team 34
+# Cluster and Cloud Computing (COMP90024) 2022 Sem 1 - Team 34
 Team members:
 - Juny Kesumadewi (197751)
 - Georgia Lewis (982172)
